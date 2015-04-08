@@ -153,7 +153,7 @@ If you're using Devise you may have multiple user models; AdminUser, User etc.  
 
 The order in which SwitchUser loops through the available scopes is based on the 'available_users' config parameter. You can change the scope precedence by ordering the 'available_users' hash keys.
 
-For example: if you are using ActiveAdmin and Devise you could have two user models: AdminUser and RegularUser. To ensure that admin user is checked first:
+For example: if you are using ActiveAdmin and Devise you could have two user models: AdminUser and User. To ensure that admin user is checked first:
 ```ruby
 config.available_users = { :admin_user => lambda { AdminUser.all }, :user => lambda { User.all } }
 ```
