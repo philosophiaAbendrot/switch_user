@@ -60,6 +60,7 @@ SwitchUser.setup do |config|
   # available_users is a hash,
   # key is the model name of user (:user, :admin, or any name you use),
   # value is a block that return the users that can be switched.
+  # If there are multiple models, the order will determine which scope is checked first for the current user.
   config.available_users = { :user => lambda { User.all } }
 
   # available_users_identifiers is a hash,
@@ -138,13 +139,24 @@ This example would allow an admin user to user switch_user, but would only let y
 ### How it works
 
 Click the checkbox next to switch_user_select menu to remember that user for this session. Once this
-has been checked, that user is passed in as the 3rd option to the view and controller guards. 
+has been checked, that user is passed in as the 3rd option to the view and controller guards.
 This allows you to check against current_user as well as that original_user to see if the
 switch_user action should be allowed.
 
 ### Warning
 
 This feature should be used with extreme caution because of the security implications. This is especially true in a production environment.
+
+## Devise and Multiple User Models (Scopes)
+
+If you're using Devise you may have multiple user models; AdminUser, User etc.  Devise calls these different types of users 'scopes'.  Devise allows multiple scopes to be signed in to the current session, so to find the current user SwitchUser will loop through the available scopes and select the first one that has a non-nil user.
+
+The order in which SwitchUser loops through the available scopes is based on the 'available_users' config parameter. You can change the scope precedence by ordering the 'available_users' hash keys.
+
+For example: if you are using ActiveAdmin and Devise you could have two user models: AdminUser and RegularUser. To ensure that admin user is checked first:
+```ruby
+config.available_users = { :admin_user => lambda { AdminUser.all }, :user => lambda { User.all } }
+```
 
 ## Credit
 
