@@ -15,7 +15,10 @@ module SwitchUser
       end
 
       def current_user(scope = :user)
-        @warden.user(scope)
+        result = (SwitchUser.available_scopes).reduce(@warden.user(scope)) do |memo, _scope|
+          memo.nil? ? @warden.user(_scope) : memo
+        end
+        result
       end
     end
   end
