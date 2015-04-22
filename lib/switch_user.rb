@@ -24,6 +24,7 @@ module SwitchUser
   mattr_accessor :login_exclusive
   mattr_accessor :controller_guard
   mattr_accessor :view_guard
+  mattr_accessor :default_scope
   mattr_reader   :guard_class
 
   def self.setup
@@ -66,6 +67,7 @@ module SwitchUser
     self.helper_with_guest = true
     self.switch_back = false
     self.login_exclusive = true
+    self.default_scope = :user
   end
 
   reset_config

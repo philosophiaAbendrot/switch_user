@@ -10,14 +10,13 @@ module SwitchUser
       end
 
       def login_exclusive(user, args)
-        requested_scope = args.fetch(:scope, :user).to_sym
-
+        requested_scope = _validate_scope( args.fetch(:scope).to_sym )
         logout_all
         login(user, requested_scope)
       end
 
       def login_inclusive(user, args)
-        requested_scope = args.fetch(:scope, :user).to_sym
+        requested_scope = _validate_scope( args.fetch(:scope).to_sym )
 
         logout(requested_scope)
         login(user, requested_scope)
@@ -54,6 +53,20 @@ module SwitchUser
 
       def clear_original_user
         @controller.session.delete(:original_user_scope_identifier)
+      end
+
+      def _validate_scope(scope)
+        scope = _default_scope if scope.nil?
+        raise UnknownScopeError.new("Unknown scope '#{scope}': please ensure the available_users is configured.") if !legal_scope?(scope)
+        scope
+      end
+
+      def legal_scope?(scope)
+        SwitchUser.available_scopes.include? scope
+      end
+
+      def _default_scope
+        SwitchUser.available_scopes.first
       end
     end
   end

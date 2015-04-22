@@ -36,26 +36,56 @@ describe SwitchUser::Provider::Devise do
   let(:controller) { DeviseController.new }
   let(:provider) { SwitchUser::Provider::Devise.new(controller) }
   let(:user) { double(:user) }
+  let(:admin) { double(:admin) }
 
   it_behaves_like "a provider"
 
-  it "can use alternate scopes" do
-    user = double(:user)
-    provider.login(user, :admin)
+  it 'only allows defined scopes to be used' do
+    expect {
+      provider.login(user, :foobar)
+    }.to raise_error(SwitchUser::Provider::UnknownScopeError)
+  end
 
-    provider.current_user(:admin).should == user
+  it 'can use a default scope' do
+    provider.login(user)
+    provider.current_user.should == user
+  end
+
+  it "can use alternate scopes" do
+    allow(SwitchUser).to receive(:available_users).and_return({:user_test => nil, :admin => nil})
+    provider.login(admin, :user_test)
+    expect(provider.current_user).to eq(admin)
+    expect(provider.current_user(:user_test)).to eq(admin)
+  end
+
+  describe "#login_inclusive" do
+
+    before do
+      allow(SwitchUser).to receive(:available_users).and_return({:user_test => nil, :admin => nil})
+      provider.login(admin, :admin)
+      provider.login_inclusive(user, :scope => :user_test)
+    end
+
+    it 'should log in as the user' do
+      expect(provider.current_user).to eq(user)
+    end
+
+    it 'should remain logged in as the admin' do
+      expect(provider.current_user(:admin)).to eq(admin)
+    end
+
   end
 
   describe "#login_exclusive" do
 
     before do
-      allow(SwitchUser).to receive(:available_users).and_return({:user => nil, :admin => nil})
-      provider.login(user, :admin)
-      provider.login_exclusive(user, :scope => "user")
+      allow(SwitchUser).to receive(:available_users).and_return({:admin => nil, :user_test => nil})
+      provider.login(admin, :admin)
+      provider.login_exclusive(user, :scope => "user_test")
     end
 
     it "logs the user in" do
-      provider.current_user.should == user
+      expect( provider.current_user ).to eq(user)
     end
 
     it "logs out other scopes" do
