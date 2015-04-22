@@ -47,6 +47,7 @@ describe SwitchUser::Provider::Devise do
   end
 
   describe "#login_exclusive" do
+
     before do
       allow(SwitchUser).to receive(:available_users).and_return({:user => nil, :admin => nil})
       provider.login(user, :admin)

@@ -1,5 +1,6 @@
 require "rails"
 require "rails/all"
+require 'switch_user'
 require 'switch_user/rails'
 
 

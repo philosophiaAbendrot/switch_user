@@ -7,7 +7,7 @@ module SwitchUser
       end
 
       def login(user, scope = :user)
-        @warden.session_serializer.store(user, scope)
+        @warden.set_user(user, :scope => scope)
       end
 
       def logout(scope = :user)
@@ -15,10 +15,14 @@ module SwitchUser
       end
 
       def current_user(scope = nil)
-        result = (SwitchUser.available_scopes).reduce(@warden.user(scope)) do |memo, _scope|
-          memo.nil? ? @warden.user(_scope) : memo
+        if scope
+          @warden.user(scope)
+        else
+          result = (SwitchUser.available_scopes).reduce(@warden.user(scope)) do |memo, _scope|
+            memo.nil? ? @warden.user(_scope) : memo
+          end
+          result
         end
-        result
       end
     end
   end

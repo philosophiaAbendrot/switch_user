@@ -23,9 +23,9 @@ describe SwitchUserController, :type => :controller do
 
     it "denies access according to the guard block" do
       SwitchUser.controller_guard = lambda {|_,_,_| false }
-      get :set_current_user
-
-      response.should be_forbidden
+      expect {
+        get :set_current_user
+      }.to raise_error( ActionController::RoutingError )
     end
 
     describe "requests with a privileged original_user" do
