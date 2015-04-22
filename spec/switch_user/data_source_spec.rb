@@ -1,12 +1,26 @@
+
+require 'active_record'
 require 'switch_user/data_source'
 
 module SwitchUser
   describe DataSource do
-    it "can load users" do
-      loader = lambda { [ double, double] }
-      source = DataSource.new(loader, :user, :id, :email)
+    describe '#users' do
+      it "can load users" do
+        loader = lambda { [ double, double] }
+        source = DataSource.new(loader, :user, :id, :email)
+        source.users.should have(2).records
+      end
+    end
+    describe '#find_by_id' do
+      it 'can use an ActiveRecord::Base strategy to retrieve an object' do
+        fake_active_record_model_class = double(:fake_active_record_model_class)
+        expect(fake_active_record_model_class).to receive(:kind_of?).with(ActiveRecord::Base).and_return(true)
+        loader = lambda { fake_active_record_model_class }
+        source = DataSource.new(loader, :user, :id, :email)
+        expect(fake_active_record_model_class).to receive(:where).with(:id => 10).and_return([])
 
-      source.users.should have(2).records
+        source.find_by_id(10)
+      end
     end
   end
 
@@ -28,7 +42,17 @@ module SwitchUser
 
         source.find_scope_id("user_10").should == user
       end
+
+      #Below is an optimization for activerecord
+      it 'Should use a DataSource find_by_id method when available' do
+        s1 = double(:s1, :scope => "user", :users => [])
+        source = DataSources.new([s1])
+        expect(s1).to receive(:find_by_id).with('10')
+        source.find_scope_id("user_10")
+      end
+
     end
+
   end
 
   describe Record do
