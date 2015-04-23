@@ -46,13 +46,14 @@ module SwitchUser
       if !user
         user = users.flat_map.detect {|u| u.scope_id == scope_id }
       end
+      user
     end
 
     def find_by_id(scope_id)
       match = /(.*)_(.*)/.match(scope_id)
       _scope = match[1]
       _id = match[2]
-      source = sources.detect { |source| source.respond_to?(:scope) && source.scope == _scope }
+      source = sources.detect { |source| source.respond_to?(:scope) && source.scope.to_sym == _scope.to_sym }
       source.find_by_id(_id) if source
     end
   end

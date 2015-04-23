@@ -45,7 +45,7 @@ module SwitchUser
 
       #Below is an optimization for activerecord
       it 'Should use a DataSource find_by_id method when available' do
-        s1 = double(:s1, :scope => "user", :users => [])
+        s1 = double(:s1, :scope => :user, :users => [])
         source = DataSources.new([s1])
         expect(s1).to receive(:find_by_id).with('10')
         source.find_scope_id("user_10")
