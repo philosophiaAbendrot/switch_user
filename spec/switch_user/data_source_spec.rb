@@ -14,7 +14,7 @@ module SwitchUser
     describe '#find_by_id' do
       it 'can use an ActiveRecord::Base strategy to retrieve an object' do
         fake_active_record_model_class = double(:fake_active_record_model_class)
-        expect(fake_active_record_model_class).to receive(:kind_of?).with(ActiveRecord::Base).and_return(true)
+        expect(fake_active_record_model_class).to receive(:<).with(ActiveRecord::Base).and_return(true)
         loader = lambda { fake_active_record_model_class }
         source = DataSource.new(loader, :user, :id, :email)
         expect(fake_active_record_model_class).to receive(:where).with(:id => 10).and_return([])

@@ -5,11 +5,13 @@ module SwitchUser
     end
     def find_by_id(id)
       obj = loader.call
-      if obj.kind_of? ActiveRecord::Base
-        obj.where( identifier => id ).first
+      if obj < ActiveRecord::Base
+        result = obj.where( identifier => id ).first
+        result = Record.new(result, self) if result
       else
-        users.detect { |u| u.scope_id == "#{scope}_#{id}" }
+        result = users.detect { |u| u.scope_id == "#{scope}_#{id}" }
       end
+      result
     end
   end
 
