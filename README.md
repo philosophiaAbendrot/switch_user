@@ -64,6 +64,8 @@ SwitchUser.setup do |config|
   # value is a block that return the users that can be switched.
   # If there are multiple models, the order will determine which scope is checked first for the current user.
   config.available_users = { :user => lambda { User.all } }
+  # Alternatively if you're using ActiveRecord, you can simply return the model class.  If given an ActiveRecord::Base subclass, switch_user will use the more efficient ActiveRecord::Base#where method to retrieve the models:
+  # config.available_users = { :user => lambda { User } }
 
   # available_users_identifiers is a hash,
   # keys in this hash should match a key in the available_users hash
