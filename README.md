@@ -1,3 +1,5 @@
+[![Circle CI](https://circleci.com/gh/asselstine/switch_user/tree/master.svg?style=svg)](https://circleci.com/gh/asselstine/switch_user/tree/master)
+
 # switch_user
 
 Inspired from [hobo][0], switch_user provides a convenient way to switch current user without needing to log out and log in manually.
