@@ -1,0 +1,1 @@
+The optimization that was added is not consistent with switch_users original intention of allowing a subset of users to be switched to.  I.e. the available_users config setting is supposed to define the subset of users that can be switched to.  However, the tests pass so perhaps we're okay?
