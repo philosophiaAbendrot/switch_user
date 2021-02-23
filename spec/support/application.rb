@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
 end
 
 class DummyController < ApplicationController
-  before_filter :require_user, :only => :protected
+  before_action :require_user, :only => :protected
 
   def authenticated
     render :text => current_user.inspect
